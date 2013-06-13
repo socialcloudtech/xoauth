@@ -22,7 +22,7 @@ import java.util.Properties;
 import javax.mail.Session;
 import javax.mail.URLName;
 
-import com.sun.mail.imap.IMAPSSLStore;
+import com.sun.mail.gimap.GmailSSLStore;
 import com.sun.mail.smtp.SMTPTransport;
 
 /**
@@ -65,17 +65,17 @@ public class OAuth2Authenticator {
 	 * 
 	 * @return An authenticated IMAPStore that can be used for IMAP operations.
 	 */
-	public static IMAPSSLStore connectToImap(String host, int port, String userEmail, String oauthToken, boolean debug)
+	public static GmailSSLStore connectToImap(String host, int port, String userEmail, String oauthToken, boolean debug)
 			throws Exception {
 		Properties props = new Properties();
-		props.put("mail.imaps.sasl.enable", "true");
-		props.put("mail.imaps.sasl.mechanisms", "XOAUTH2");
+		props.put("mail.gimaps.sasl.enable", "true");
+		props.put("mail.gimaps.sasl.mechanisms", "XOAUTH2");
 		props.put(OAuth2SaslClientFactory.OAUTH_TOKEN_PROP, oauthToken);
 		Session session = Session.getInstance(props);
 		session.setDebug(debug);
 
-		final URLName unusedUrlName = null;
-		IMAPSSLStore store = new IMAPSSLStore(session, unusedUrlName);
+		final URLName unusedUrlName = null;//new URLName("http://localhost:8005");
+		GmailSSLStore store = new GmailSSLStore(session, unusedUrlName);
 		final String emptyPassword = "";
 		// System.out.println(host + " " + port + " " + userEmail + " " + emptyPassword);
 		store.connect(host, port, userEmail, emptyPassword);
@@ -129,4 +129,5 @@ public class OAuth2Authenticator {
 		connectToSmtp("smtp.googlemail.com", 587, email, oauthToken, true);
 		System.out.println("Successfully authenticated to SMTP.");
 	}
+
 }
